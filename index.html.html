@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto Saludable: En Ruta y Oficina — ¿Mito o Verdad?</title>
+    <!-- Tailwind CSS para diseño moderno y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fuente Inter y Fredoka para títulos dinámicos -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Librería de Confeti para celebrar aciertos y finalización -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Tone.js para efectos de sonido opcionales generados por código -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 50%, #fef3c7 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Animaciones suaves para tarjetas y botones */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.92) translateY(15px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+        }
+
+        .animate-pop {
+            animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        .btn-3d {
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-3d:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        /* Estilo de certificado decorativo */
+        .certificate-border {
+            background-image: radial-gradient(#0d9488 1px, transparent 1px), radial-gradient(#f59e0b 1px, #ffffff 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col items-center justify-center p-3 sm:p-6">
+
+    <!-- Contenedor Principal Responsivo -->
+    <main class="w-full max-w-lg bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-white overflow-hidden relative">
+        
+        <!-- Barra Superior de Estado / Sonido -->
+        <header class="bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 text-white px-5 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🌿</span>
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-teal-100 block leading-none">Promoción y Prevención (PyP)</span>
+                    <span class="font-display font-bold text-base sm:text-lg leading-tight">En Ruta y Oficina</span>
+                </div>
+            </div>
+            <button id="soundToggle" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 text-white rounded-full p-2 text-sm transition flex items-center gap-1" title="Activar/Desactivar sonido">
+                <span id="soundIcon">🔊</span>
+            </button>
+        </header>
+
+        <!-- ==================== PANTALLA 1: BIENVENIDA ==================== -->
+        <section id="screen-welcome" class="p-6 sm:p-8 animate-pop">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 text-5xl mb-3 shadow-inner">
+                    🚐💻
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+                    Reto Saludable: En Ruta y Oficina
+                </h1>
+                <p class="text-slate-600 text-sm sm:text-base">
+                    Juego interactivo de Promoción y Prevención (PyP). ¡Responde <strong>6 retos rápidos</strong> de ¿Mito o Verdad? y genera tu reporte para WhatsApp!
+                </p>
+            </div>
+
+            <!-- Insignias de los 3 ejes temáticos -->
+            <div class="grid grid-cols-3 gap-2 mb-6 text-center">
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-2.5">
+                    <div class="text-2xl mb-1">🥗</div>
+                    <p class="text-[11px] sm:text-xs font-semibold text-emerald-800 leading-tight">Alimentación e Hidratación</p>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 rounded-2xl p-2.5">
+                    <div class="text-2xl mb-1">🚫</div>
+                    <p class="text-[11px] sm:text-xs font-semibold text-rose-800 leading-tight">Cero Alcohol, Tabaco y SPA</p>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-2.5">
+                    <div class="text-2xl mb-1">❤️</div>
+                    <p class="text-[11px] sm:text-xs font-semibold text-amber-800 leading-tight">Corazón y Chequeos</p>
+                </div>
+            </div>
+
+            <!-- Formulario de Registro Rápido -->
+            <form id="startForm" onsubmit="startGame(event)" class="space-y-4">
+                <div>
+                    <label for="playerName" class="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">
+                        Tu Nombre Completo *
+                    </label>
+                    <input type="text" id="playerName" required placeholder="Ej: Carlos Pérez / Laura Gómez"
+                        class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-teal-500 focus:outline-none text-slate-800 font-medium transition">
+                </div>
+
+                <div>
+                    <label for="playerArea" class="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">
+                        Rol / Área *
+                    </label>
+                    <select id="playerArea" required
+                        class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-teal-500 focus:outline-none text-slate-800 font-medium bg-white transition">
+                        <option value="Conductor / Operaciones">🚐 Conductor / Operaciones</option>
+                        <option value="Personal Administrativo / Oficina">💻 Personal Administrativo / Oficina</option>
+                    </select>
+                </div>
+
+                <!-- Mensaje de validación -->
+                <div id="formError" class="hidden text-rose-600 text-xs font-semibold text-center bg-rose-50 py-2 rounded-xl">
+                    Por favor escribe tu nombre completo para continuar.
+                </div>
+
+                <button type="submit"
+                    class="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-display font-bold text-lg tracking-wide btn-3d cursor-pointer flex items-center justify-center gap-2">
+                    <span>¡Comenzar el Reto!</span>
+                    <span>🚀</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- ==================== PANTALLA 2: JUEGO INTERACTIVO ==================== -->
+        <section id="screen-game" class="hidden p-5 sm:p-7">
+            <!-- Barra de Progreso y Racha -->
+            <div class="flex items-center justify-between mb-3 text-xs sm:text-sm font-bold">
+                <span class="text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+                    Reto <span id="qNumber">1</span> de 6
+                </span>
+                <div class="flex items-center gap-2">
+                    <span id="streakBadge" class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full border border-amber-300 flex items-center gap-1 transition-transform">
+                        🔥 Racha: <span id="streakCount">0</span>
+                    </span>
+                    <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-300">
+                        ⭐ <span id="scoreCount">0</span> pts
+                    </span>
+                </div>
+            </div>
+
+            <!-- Barra Visual de Progreso -->
+            <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-5 p-0.5 border border-slate-200">
+                <div id="progressBar" class="bg-gradient-to-r from-teal-400 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 16.6%;"></div>
+            </div>
+
+            <!-- Tarjeta de Pregunta -->
+            <div id="questionCard" class="bg-slate-50 border-2 border-slate-200/80 rounded-3xl p-5 sm:p-6 mb-5 shadow-sm relative overflow-hidden">
+                <!-- Etiqueta de Categoría -->
+                <div class="flex items-center justify-between mb-3">
+                    <span id="categoryTag" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-teal-100 text-teal-800">
+                        🥗 Alimentación e Hidratación
+                    </span>
+                    <span id="questionEmoji" class="text-3xl">💧</span>
+                </div>
+
+                <!-- Enunciado del Mito o Verdad -->
+                <h2 id="questionText" class="text-lg sm:text-xl font-bold text-slate-800 leading-snug">
+                    Cargando pregunta...
+                </h2>
+            </div>
+
+            <!-- Botones de Respuesta (MITO vs VERDAD) -->
+            <div id="answerButtons" class="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+                <button onclick="checkAnswer(false)"
+                    class="py-4 px-3 rounded-2xl bg-gradient-to-b from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-display font-bold text-lg sm:text-xl btn-3d flex flex-col items-center justify-center gap-1 cursor-pointer">
+                    <span class="text-2xl sm:text-3xl">❌</span>
+                    <span>MITO</span>
+                </button>
+
+                <button onclick="checkAnswer(true)"
+                    class="py-4 px-3 rounded-2xl bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-display font-bold text-lg sm:text-xl btn-3d flex flex-col items-center justify-center gap-1 cursor-pointer">
+                    <span class="text-2xl sm:text-3xl">✅</span>
+                    <span>VERDAD</span>
+                </button>
+            </div>
+
+            <!-- Panel de Retroalimentación Inmediata -->
+            <div id="feedbackBox" class="hidden rounded-2xl p-4 sm:p-5 border-2 animate-pop">
+                <div class="flex items-center gap-2.5 mb-2">
+                    <span id="feedbackIcon" class="text-3xl">🎉</span>
+                    <div>
+                        <h3 id="feedbackTitle" class="font-display font-bold text-lg leading-tight">¡Excelente!</h3>
+                        <p id="feedbackSubtitle" class="text-xs font-semibold uppercase tracking-wide opacity-80">Es Mito</p>
+                    </div>
+                </div>
+                <p id="feedbackExplanation" class="text-sm text-slate-700 leading-relaxed mb-4">
+                    Explicación detallada aquí.
+                </p>
+                <button onclick="nextQuestion()"
+                    class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-display font-bold text-base btn-3d cursor-pointer flex items-center justify-center gap-2">
+                    <span id="nextBtnText">Siguiente Reto</span>
+                    <span>➡️</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== PANTALLA 3: CERTIFICADO Y RESULTADOS ==================== -->
+        <section id="screen-result" class="hidden p-5 sm:p-7 animate-pop">
+            <!-- Certificado Visual -->
+            <div class="certificate-border p-1.5 rounded-3xl shadow-lg mb-5">
+                <div class="bg-white rounded-[20px] p-5 sm:p-6 text-center border border-teal-100">
+                    <div class="inline-block bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                        Constancia de Participación PyP
+                    </div>
+                    
+                    <div id="badgeEmoji" class="text-5xl sm:text-6xl my-2">🏅</div>
+                    
+                    <h2 id="badgeTitle" class="text-xl sm:text-2xl font-bold text-teal-800 mb-1">
+                        ¡Embajador de Bienestar!
+                    </h2>
+                    
+                    <p class="text-xs text-slate-500 mb-3">Otorgado a:</p>
+                    
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl py-2.5 px-4 mb-4">
+                        <p id="certName" class="font-display font-bold text-lg sm:text-xl text-slate-800">Nombre Participante</p>
+                        <p id="certArea" class="text-xs font-medium text-slate-500">Área / Cargo</p>
+                    </div>
+
+                    <!-- Resumen de Puntaje -->
+                    <div class="grid grid-cols-3 gap-2 text-center mb-4">
+                        <div class="bg-emerald-50 rounded-xl p-2">
+                            <span class="block text-xs text-emerald-700 font-semibold">Aciertos</span>
+                            <span id="finalCorrect" class="font-display font-bold text-lg text-emerald-800">6/6</span>
+                        </div>
+                        <div class="bg-amber-50 rounded-xl p-2">
+                            <span class="block text-xs text-amber-700 font-semibold">Puntaje</span>
+                            <span id="finalPoints" class="font-display font-bold text-lg text-amber-800">600</span>
+                        </div>
+                        <div class="bg-teal-50 rounded-xl p-2">
+                            <span class="block text-xs text-teal-700 font-semibold">Fecha</span>
+                            <span id="certDate" class="font-display font-bold text-xs sm:text-sm text-teal-800 leading-7">Hoy</span>
+                        </div>
+                    </div>
+
+                    <!-- Selección de Compromiso Saludable -->
+                    <div class="text-left bg-teal-50/70 border border-teal-200 rounded-2xl p-3">
+                        <label for="commitmentSelect" class="block text-xs font-bold text-teal-900 mb-1.5">
+                            🎯 Elige tu compromiso saludable de esta semana:
+                        </label>
+                        <select id="commitmentSelect" class="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-teal-300 bg-white text-slate-800 font-medium focus:outline-none">
+                            <option value="💧 Tomar agua constantemente en ruta u oficina en lugar de gaseosas">💧 Tomar agua constantemente en ruta u oficina</option>
+                            <option value="🥗 Elegir almuerzos ligeros (asados y ensalada) para evitar pesadez">🥗 Elegir almuerzos ligeros (asados y ensalada)</option>
+                            <option value="🏃 Hacer pausas de estiramiento y caminar 20 minutos al día">🏃 Hacer pausas de estiramiento y caminar 20 min al día</option>
+                            <option value="🚫 Mantener cero alcohol/SPA y revisar si mis medicinas dan sueño">🚫 Cero alcohol/SPA y revisar si mis medicinas dan sueño</option>
+                            <option value="🩺 Cumplir las recomendaciones de mi examen médico ocupacional">🩺 Cumplir recomendaciones de mi chequeo médico</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Principal: Copiar Resultado para WhatsApp -->
+            <div class="space-y-3">
+                <button onclick="copyResultForWhatsApp()"
+                    class="w-full py-4 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-display font-bold text-base sm:text-lg btn-3d cursor-pointer flex items-center justify-center gap-2">
+                    <span>📲 Copiar reporte para enviar por WhatsApp</span>
+                </button>
+
+                <!-- Notificación de Copiado Exitoso -->
+                <div id="copyFeedback" class="hidden bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs sm:text-sm font-semibold text-center py-2.5 px-3 rounded-xl animate-pop">
+                    ✅ ¡Reporte copiado! Abre el grupo de WhatsApp y dale <strong>Pegar</strong> para enviar tu evidencia.
+                </div>
+
+                <button onclick="restartGame()"
+                    class="w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition cursor-pointer">
+                    🔄 Volver a jugar
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pie de página discreto -->
+    <footer class="mt-4 text-center text-xs text-slate-500">
+        Promoción y Prevención (PyP) • Bienestar en Ruta y Oficina
+    </footer>
+
+    <script>
+        // Banco de 6 preguntas adaptadas a conductores en ruta y personal de oficina
+        const questions = [
+            {
+                category: "🥗 Alimentación e Hidratación",
+                catStyle: "bg-emerald-100 text-emerald-800",
+                emoji: "🍲",
+                text: "Comer un almuerzo muy abundante y lleno de fritos da más energía para conducir en carretera o rendir en la oficina.",
+                isTrue: false,
+                explanation: "¡Es MITO! Las comidas pesadas y grasosas exigen mucha sangre en el estómago para digerir, lo que provoca pesadez y somnolencia ('marea alcalina') muy peligrosa al volante y en el escritorio."
+            },
+            {
+                category: "🥗 Alimentación e Hidratación",
+                catStyle: "bg-emerald-100 text-emerald-800",
+                emoji: "🥤",
+                text: "Las gaseosas y bebidas energizantes hidratan igual que el agua y quitan el cansancio de forma segura durante el turno.",
+                isTrue: false,
+                explanation: "¡Es MITO! El exceso de azúcar y cafeína da un pico rápido seguido de un bajón fuerte de energía, además de alterar el ritmo cardíaco. El agua pura es la única hidratación saludable."
+            },
+            {
+                category: "🚫 Cero Alcohol, Tabaco y SPA",
+                catStyle: "bg-rose-100 text-rose-800",
+                emoji: "🥴",
+                text: "Si dormí 5 horas después de tomar alcohol anoche y me tomé un café negro, ya estoy 100 % apto para conducir o trabajar.",
+                isTrue: false,
+                explanation: "¡Es MITO! El hígado tarda cerca de 1 hora en procesar cada trago. Con 'guayabo' persiste alcohol residual que reduce los reflejos, afecta la visión y aumenta el riesgo de accidente."
+            },
+            {
+                category: "🚫 Cero Alcohol, Tabaco y SPA",
+                catStyle: "bg-rose-100 text-rose-800",
+                emoji: "💊",
+                text: "Un antigripal o pastilla para la alergia puede causar tanta somnolencia y lentitud de reacción como el alcohol.",
+                isTrue: true,
+                explanation: "¡Es VERDAD! Muchos medicamentos de venta libre tienen efecto sedante. Siempre revisa si producen sueño e informa antes de conducir vehículos o realizar tareas críticas."
+            },
+            {
+                category: "❤️ Corazón y Chequeos",
+                catStyle: "bg-amber-100 text-amber-800",
+                emoji: "🪑",
+                text: "Pasar más de 6 horas sentado (conduciendo en ruta o frente al computador) aumenta el riesgo cardiovascular si no haces pausas.",
+                isTrue: true,
+                explanation: "¡Es VERDAD! Estar sentado por tiempo prolongado afecta la circulación y la presión arterial. Estirar las piernas y caminar al menos 2-5 minutos cada 2 horas protege tu corazón."
+            },
+            {
+                category: "❤️ Corazón y Chequeos",
+                catStyle: "bg-amber-100 text-amber-800",
+                emoji: "🩺",
+                text: "Si me siento bien y no tengo dolor de cabeza, no necesito cumplir las recomendaciones de mi examen médico ocupacional.",
+                isTrue: false,
+                explanation: "¡Es MITO! La hipertensión y el colesterol alto son 'enemigos silenciosos' porque no dan síntomas al inicio. Usar gafas formuladas, cuidar la dieta y controlar tu presión salva vidas."
+            }
+        ];
+
+        // Variables de estado del juego
+        let currentIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let streak = 0;
+        let playerName = "";
+        let playerArea = "";
+        let soundEnabled = true;
+        let answeredCurrent = false;
+
+        // Control de sonido con Tone.js (sin archivos externos)
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+        }
+
+        function playTone(type) {
+            if (!soundEnabled || typeof Tone === 'undefined') return;
+            try {
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+                const synth = new Tone.Synth().toDestination();
+                if (type === 'correct') {
+                    synth.triggerAttackRelease("C5", "16n", Tone.now());
+                    synth.triggerAttackRelease("E5", "16n", Tone.now() + 0.08);
+                    synth.triggerAttackRelease("G5", "8n", Tone.now() + 0.16);
+                } else if (type === 'wrong') {
+                    synth.triggerAttackRelease("E3", "8n", Tone.now());
+                    synth.triggerAttackRelease("C3", "8n", Tone.now() + 0.12);
+                } else if (type === 'win') {
+                    synth.triggerAttackRelease("C5", "16n", Tone.now());
+                    synth.triggerAttackRelease("E5", "16n", Tone.now() + 0.1);
+                    synth.triggerAttackRelease("G5", "16n", Tone.now() + 0.2);
+                    synth.triggerAttackRelease("C6", "4n", Tone.now() + 0.3);
+                }
+            } catch (e) {
+                // Ignorar si el navegador bloquea audio automático
+            }
+        }
+
+        // Iniciar juego desde la pantalla de bienvenida
+        function startGame(event) {
+            event.preventDefault();
+            const nameInput = document.getElementById('playerName').value.trim();
+            const areaInput = document.getElementById('playerArea').value;
+
+            if (!nameInput) {
+                document.getElementById('formError').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('formError').classList.add('hidden');
+            playerName = nameInput;
+            playerArea = areaInput;
+
+            // Reiniciar contadores
+            currentIndex = 0;
+            score = 0;
+            correctCount = 0;
+            streak = 0;
+
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+
+            renderQuestion();
+        }
+
+        // Renderizar la tarjeta de pregunta actual
+        function renderQuestion() {
+            answeredCurrent = false;
+            const q = questions[currentIndex];
+
+            // Actualizar contadores y barra
+            document.getElementById('qNumber').textContent = currentIndex + 1;
+            document.getElementById('scoreCount').textContent = score;
+            document.getElementById('streakCount').textContent = streak;
+            const progressPercent = ((currentIndex + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+            // Actualizar contenido de la tarjeta
+            const catTag = document.getElementById('categoryTag');
+            catTag.textContent = q.category;
+            catTag.className = `inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full ${q.catStyle}`;
+
+            document.getElementById('questionEmoji').textContent = q.emoji;
+            document.getElementById('questionText').textContent = `"${q.text}"`;
+
+            // Animar entrada de tarjeta
+            const card = document.getElementById('questionCard');
+            card.classList.remove('animate-pop', 'animate-shake');
+            void card.offsetWidth; // Forzar reflow
+            card.classList.add('animate-pop');
+
+            // Mostrar botones y ocultar feedback
+            document.getElementById('answerButtons').classList.remove('hidden');
+            document.getElementById('feedbackBox').classList.add('hidden');
+        }
+
+        // Validar respuesta seleccionada por el usuario
+        function checkAnswer(userSaysTrue) {
+            if (answeredCurrent) return;
+            answeredCurrent = true;
+
+            const q = questions[currentIndex];
+            const isCorrect = (userSaysTrue === q.isTrue);
+
+            const feedbackBox = document.getElementById('feedbackBox');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackSubtitle = document.getElementById('feedbackSubtitle');
+            const feedbackExplanation = document.getElementById('feedbackExplanation');
+            const card = document.getElementById('questionCard');
+
+            // Ocultar botones de elección
+            document.getElementById('answerButtons').classList.add('hidden');
+
+            if (isCorrect) {
+                correctCount++;
+                streak++;
+                const bonus = streak >= 2 ? 20 : 0;
+                score += (100 + bonus);
+
+                playTone('correct');
+
+                // Confeti sutil al acertar
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 35,
+                        spread: 55,
+                        origin: { y: 0.7 }
+                    });
+                }
+
+                feedbackBox.className = "rounded-2xl p-4 sm:p-5 border-2 bg-emerald-50 border-emerald-300 text-emerald-950 animate-pop";
+                feedbackIcon.textContent = "🎉";
+                feedbackTitle.textContent = streak >= 2 ? `¡Excelente! +${100 + bonus} pts (Racha x${streak})` : "¡Respuesta Correcta! +100 pts";
+                feedbackSubtitle.textContent = q.isTrue ? "Esta afirmación es VERDAD" : "Esta afirmación es MITO";
+            } else {
+                streak = 0;
+                playTone('wrong');
+
+                card.classList.add('animate-shake');
+                feedbackBox.className = "rounded-2xl p-4 sm:p-5 border-2 bg-rose-50 border-rose-300 text-rose-950 animate-pop";
+                feedbackIcon.textContent = "💡";
+                feedbackTitle.textContent = "¡Buen intento! Toma nota:";
+                feedbackSubtitle.textContent = q.isTrue ? "En realidad es VERDAD" : "En realidad es MITO";
+            }
+
+            // Actualizar marcadores superiores
+            document.getElementById('scoreCount').textContent = score;
+            document.getElementById('streakCount').textContent = streak;
+
+            feedbackExplanation.textContent = q.explanation;
+            document.getElementById('nextBtnText').textContent = (currentIndex === questions.length - 1) ? "Ver mi Certificado 🏆" : "Siguiente Reto";
+            feedbackBox.classList.remove('hidden');
+        }
+
+        // Pasar a la siguiente pregunta o mostrar certificado
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Mostrar pantalla final con certificado
+        function showResults() {
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            playTone('win');
+
+            // Confeti de celebración final
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 90,
+                    spread: 75,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            // Asignar insignia según desempeño
+            let badgeEmoji = "🌟";
+            let badgeTitle = "Promotor de Vida Saludable";
+
+            if (correctCount === 6) {
+                badgeEmoji = "👑";
+                badgeTitle = "Embajador Estrella en Ruta y Oficina";
+            } else if (correctCount >= 4) {
+                badgeEmoji = "🏅";
+                badgeTitle = "Guardián de la Salud Vial y Laboral";
+            } else {
+                badgeEmoji = "🌱";
+                badgeTitle = "Aprendiz de Hábitos Saludables";
+            }
+
+            // Obtener fecha actual formateada
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+
+            document.getElementById('badgeEmoji').textContent = badgeEmoji;
+            document.getElementById('badgeTitle').textContent = badgeTitle;
+            document.getElementById('certName').textContent = playerName;
+            document.getElementById('certArea').textContent = playerArea;
+            document.getElementById('finalCorrect').textContent = `${correctCount}/${questions.length}`;
+            document.getElementById('finalPoints').textContent = `${score} pts`;
+            document.getElementById('certDate').textContent = dateStr;
+            document.getElementById('copyFeedback').classList.add('hidden');
+        }
+
+        // Copiar resumen formateado para pegar directo en WhatsApp
+        function copyResultForWhatsApp() {
+            const commitment = document.getElementById('commitmentSelect').value;
+            const badge = document.getElementById('badgeTitle').textContent;
+            const dateStr = document.getElementById('certDate').textContent;
+
+            const message = 
+`🌿 *RETO SALUDABLE: EN RUTA Y OFICINA (PyP)* 🌿
+✅ *Nombre:* ${playerName}
+🚐💻 *Rol/Área:* ${playerArea}
+📅 *Fecha:* ${dateStr}
+🏆 *Puntaje:* ${correctCount}/${questions.length} aciertos (${score} pts)
+🎖️ *Insignia:* ${badge}
+🎯 *Compromiso:* ${commitment}`;
+
+            // Crear textarea temporal para garantizar compatibilidad en iframes y móviles
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = message;
+            tempTextArea.style.position = "fixed";
+            tempTextArea.style.left = "-9999px";
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            tempTextArea.setSelectionRange(0, 99999);
+
+            try {
+                document.execCommand("copy");
+                document.getElementById('copyFeedback').classList.remove('hidden');
+            } catch (err) {
+                console.error("Error al copiar", err);
+            }
+
+            document.body.removeChild(tempTextArea);
+        }
+
+        // Reiniciar el juego
+        function restartGame() {
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
